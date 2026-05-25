@@ -1,0 +1,205 @@
+```sql
+CREATE DATABASE ESCOLA;
+USE ESCOLA;
+
+CREATE TABLE ALUNO(
+    id_aluno INT PRIMARY KEY AUTO_INCREMENT,
+    nome_aluno VARCHAR(100),
+    idade INT
+);
+
+CREATE TABLE PROFESSOR(
+    id_professor INT PRIMARY KEY AUTO_INCREMENT,
+    nome_professor VARCHAR(100),
+    especialidade VARCHAR(100)
+);
+
+CREATE TABLE CURSO(
+    id_curso INT PRIMARY KEY AUTO_INCREMENT,
+    nome_curso VARCHAR(100),
+    carga_horaria INT
+);
+
+CREATE TABLE TURMA(
+    id_turma INT PRIMARY KEY AUTO_INCREMENT,
+    nome_turma VARCHAR(50),
+    id_curso INT,
+    id_professor INT,
+
+    FOREIGN KEY(id_curso)
+    REFERENCES CURSO(id_curso),
+
+    FOREIGN KEY(id_professor)
+    REFERENCES PROFESSOR(id_professor)
+);
+
+CREATE TABLE MATRICULA(
+    id_matricula INT PRIMARY KEY AUTO_INCREMENT,
+    id_aluno INT,
+    id_turma INT,
+    data_matricula DATE,
+
+    FOREIGN KEY(id_aluno)
+    REFERENCES ALUNO(id_aluno),
+
+    FOREIGN KEY(id_turma)
+    REFERENCES TURMA(id_turma)
+);
+
+INSERT INTO ALUNO(nome_aluno, idade)
+VALUES
+('Carlos', 20),
+('Ana', 22),
+('Juliana', 19),
+('Roberto', 25);
+
+INSERT INTO PROFESSOR(nome_professor, especialidade)
+VALUES
+('Marcos Lima', 'Banco de Dados'),
+('Fernanda Souza', 'Programação'),
+('Ricardo Alves', 'Redes');
+
+INSERT INTO CURSO(nome_curso, carga_horaria)
+VALUES
+('Desenvolvimento Web', 200),
+('Java Fundamentals', 180),
+('Administração de Redes', 150);
+
+INSERT INTO TURMA(nome_turma, id_curso, id_professor)
+VALUES
+('Turma A', 1, 1),
+('Turma B', 2, 2),
+('Turma C', 3, 3),
+('Turma D', 1, NULL);
+
+INSERT INTO MATRICULA(id_aluno, id_turma, data_matricula)
+VALUES
+(1, 1, '2026-05-01'),
+(2, 1, '2026-05-01'),
+(3, 2, '2026-05-02');
+
+SELECT 
+    ALUNO.nome_aluno,
+    TURMA.nome_turma,
+    MATRICULA.data_matricula
+FROM MATRICULA
+INNER JOIN ALUNO
+    ON MATRICULA.id_aluno = ALUNO.id_aluno
+INNER JOIN TURMA
+    ON MATRICULA.id_turma = TURMA.id_turma;
+SELECT 
+    TURMA.nome_turma,
+    PROFESSOR.nome_professor
+FROM TURMA
+LEFT JOIN PROFESSOR
+    ON TURMA.id_professor = PROFESSOR.id_professor;
+SELECT 
+    TURMA.nome_turma,
+    PROFESSOR.nome_professor
+FROM TURMA
+RIGHT JOIN PROFESSOR
+    ON TURMA.id_professor = PROFESSOR.id_professor;
+
+-- 1. Todos os alunos e suas matrículas
+SELECT 
+    ALUNO.nome_aluno,
+    MATRICULA.data_matricula
+FROM ALUNO
+INNER JOIN MATRICULA
+    ON ALUNO.id_aluno = MATRICULA.id_aluno;
+
+-- 2. Todas as turmas e seus cursos
+SELECT 
+    TURMA.nome_turma,
+    CURSO.nome_curso
+FROM TURMA
+INNER JOIN CURSO
+    ON TURMA.id_curso = CURSO.id_curso;
+
+-- 3. Todas as turmas e seus professores
+SELECT 
+    TURMA.nome_turma,
+    PROFESSOR.nome_professor
+FROM TURMA
+LEFT JOIN PROFESSOR
+    ON TURMA.id_professor = PROFESSOR.id_professor;
+
+-- 1. Alunos matriculados em Java Fundamentals
+SELECT 
+    ALUNO.nome_aluno,
+    CURSO.nome_curso
+FROM ALUNO
+INNER JOIN MATRICULA
+    ON ALUNO.id_aluno = MATRICULA.id_aluno
+INNER JOIN TURMA
+    ON MATRICULA.id_turma = TURMA.id_turma
+INNER JOIN CURSO
+    ON TURMA.id_curso = CURSO.id_curso
+WHERE CURSO.nome_curso = 'Java Fundamentals';
+
+-- 2. Cursos e suas respectivas turmas
+SELECT 
+    CURSO.nome_curso,
+    TURMA.nome_turma
+FROM CURSO
+LEFT JOIN TURMA
+    ON CURSO.id_curso = TURMA.id_curso;
+
+-- 3. Turmas sem professor
+SELECT 
+    nome_turma
+FROM TURMA
+WHERE id_professor IS NULL;
+
+-- 1. Todos os professores, mesmo sem turma
+SELECT 
+    PROFESSOR.nome_professor,
+    TURMA.nome_turma
+FROM TURMA
+RIGHT JOIN PROFESSOR
+    ON TURMA.id_professor = PROFESSOR.id_professor;
+
+-- 2. Alunos sem matrícula
+SELECT 
+    ALUNO.nome_aluno
+FROM ALUNO
+LEFT JOIN MATRICULA
+    ON ALUNO.id_aluno = MATRICULA.id_aluno
+WHERE MATRICULA.id_matricula IS NULL;
+
+-- 3. Consulta envolvendo as 5 tabelas
+SELECT 
+    ALUNO.nome_aluno,
+    CURSO.nome_curso,
+    TURMA.nome_turma,
+    PROFESSOR.nome_professor,
+    MATRICULA.data_matricula
+FROM MATRICULA
+INNER JOIN ALUNO
+    ON MATRICULA.id_aluno = ALUNO.id_aluno
+INNER JOIN TURMA
+    ON MATRICULA.id_turma = TURMA.id_turma
+INNER JOIN CURSO
+    ON TURMA.id_curso = CURSO.id_curso
+LEFT JOIN PROFESSOR
+    ON TURMA.id_professor = PROFESSOR.id_professor;
+
+SELECT 
+    ALUNO.nome_aluno AS Aluno,
+    CURSO.nome_curso AS Curso,
+    TURMA.nome_turma AS Turma,
+    PROFESSOR.nome_professor AS Professor,
+    MATRICULA.data_matricula AS Data_Matricula
+FROM MATRICULA
+
+INNER JOIN ALUNO
+    ON MATRICULA.id_aluno = ALUNO.id_aluno
+
+INNER JOIN TURMA
+    ON MATRICULA.id_turma = TURMA.id_turma
+
+INNER JOIN CURSO
+    ON TURMA.id_curso = CURSO.id_curso
+
+LEFT JOIN PROFESSOR
+    ON TURMA.id_professor = PROFESSOR.id_professor;
