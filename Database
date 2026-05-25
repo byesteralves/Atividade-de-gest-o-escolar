@@ -47,16 +47,16 @@ CREATE TABLE MATRICULA(
 
 INSERT INTO ALUNO(nome_aluno, idade)
 VALUES
-('Carlos', 20),
-('Ana', 22),
-('Juliana', 19),
-('Roberto', 25);
+('Joana', 24),
+('Talita', 21),
+('Bernardo', 20),
+('Thiago', 25);
 
 INSERT INTO PROFESSOR(nome_professor, especialidade)
 VALUES
-('Marcos Lima', 'Banco de Dados'),
+('Theodoro Lima', 'Banco de Dados'),
 ('Fernanda Souza', 'Programação'),
-('Ricardo Alves', 'Redes');
+('Mariana Andrade', 'Redes');
 
 INSERT INTO CURSO(nome_curso, carga_horaria)
 VALUES
